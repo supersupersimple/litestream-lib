@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/benbjohnson/litestream"
-	"github.com/benbjohnson/litestream/internal"
+	litestream "github.com/supersupersimple/litestream-lib"
+	"github.com/supersupersimple/litestream-lib/internal"
 )
 
 // ReplicaClientType is the client type for this package.

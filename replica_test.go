@@ -7,10 +7,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/benbjohnson/litestream"
-	"github.com/benbjohnson/litestream/file"
-	"github.com/benbjohnson/litestream/mock"
 	"github.com/pierrec/lz4/v4"
+	litestream "github.com/supersupersimple/litestream-lib"
+	"github.com/supersupersimple/litestream-lib/file"
+	"github.com/supersupersimple/litestream-lib/mock"
 )
 
 func nextIndex(pos litestream.Pos) litestream.Pos {

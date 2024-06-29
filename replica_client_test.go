@@ -13,12 +13,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/benbjohnson/litestream"
-	"github.com/benbjohnson/litestream/abs"
-	"github.com/benbjohnson/litestream/file"
-	"github.com/benbjohnson/litestream/gcs"
-	"github.com/benbjohnson/litestream/s3"
-	"github.com/benbjohnson/litestream/sftp"
+	litestream "github.com/supersupersimple/litestream-lib"
+	"github.com/supersupersimple/litestream-lib/abs"
+	"github.com/supersupersimple/litestream-lib/file"
+	"github.com/supersupersimple/litestream-lib/gcs"
+	"github.com/supersupersimple/litestream-lib/s3"
+	"github.com/supersupersimple/litestream-lib/sftp"
 )
 
 var (

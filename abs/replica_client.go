@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/Azure/azure-storage-blob-go/azblob"
-	"github.com/benbjohnson/litestream"
-	"github.com/benbjohnson/litestream/internal"
+	litestream "github.com/supersupersimple/litestream-lib"
+	"github.com/supersupersimple/litestream-lib/internal"
 	"golang.org/x/sync/errgroup"
 )
 
