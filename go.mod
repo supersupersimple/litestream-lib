@@ -7,7 +7,6 @@ require (
 	filippo.io/age v1.1.1
 	github.com/Azure/azure-storage-blob-go v0.15.0
 	github.com/aws/aws-sdk-go v1.49.5
-	github.com/mattn/go-sqlite3 v1.14.19
 	github.com/pierrec/lz4/v4 v4.1.19
 	github.com/pkg/sftp v1.13.6
 	github.com/prometheus/client_golang v1.17.0

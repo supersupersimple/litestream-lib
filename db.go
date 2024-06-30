@@ -42,15 +42,16 @@ const BusyTimeout = 1 * time.Second
 
 // DB represents a managed instance of a SQLite database in the file system.
 type DB struct {
-	mu       sync.RWMutex
-	path     string        // part to database
-	metaPath string        // Path to the database metadata.
-	db       *sql.DB       // target database
-	f        *os.File      // long-running db file descriptor
-	rtx      *sql.Tx       // long running read transaction
-	pageSize int           // page size, in bytes
-	notify   chan struct{} // closes on WAL change
-	chkMu    sync.Mutex    // checkpoint lock
+	mu         sync.RWMutex
+	path       string // part to database
+	metaPath   string // Path to the database metadata.
+	driverName string
+	db         *sql.DB       // target database
+	f          *os.File      // long-running db file descriptor
+	rtx        *sql.Tx       // long running read transaction
+	pageSize   int           // page size, in bytes
+	notify     chan struct{} // closes on WAL change
+	chkMu      sync.Mutex    // checkpoint lock
 
 	fileInfo os.FileInfo // db info cached during init
 	dirInfo  os.FileInfo // parent dir info cached during init
@@ -116,9 +117,10 @@ func NewDB(path string) *DB {
 	dir, file := filepath.Split(path)
 
 	db := &DB{
-		path:     path,
-		metaPath: filepath.Join(dir, "."+file+MetaDirSuffix),
-		notify:   make(chan struct{}),
+		path:       path,
+		driverName: "sqlite3",
+		metaPath:   filepath.Join(dir, "."+file+MetaDirSuffix),
+		notify:     make(chan struct{}),
 
 		MinCheckpointPageN: DefaultMinCheckpointPageN,
 		MaxCheckpointPageN: DefaultMaxCheckpointPageN,
@@ -168,6 +170,10 @@ func (db *DB) MetaPath() string {
 // SetMetaPath sets the path to database metadata.
 func (db *DB) SetMetaPath(mp string) {
 	db.metaPath = mp
+}
+
+func (db *DB) SetDriverName(dn string) {
+	db.driverName = dn
 }
 
 // GenerationNamePath returns the path of the name of the current generation.
@@ -428,7 +434,7 @@ func (db *DB) init() (err error) {
 	dsn += fmt.Sprintf("?_busy_timeout=%d", BusyTimeout.Milliseconds())
 
 	// Connect to SQLite database.
-	if db.db, err = sql.Open("sqlite3", dsn); err != nil {
+	if db.db, err = sql.Open(db.driverName, dsn); err != nil {
 		return err
 	}
 
@@ -1493,14 +1499,14 @@ func (db *DB) CalcRestoreTarget(ctx context.Context, opt RestoreOptions) (*Repli
 }
 
 // applyWAL performs a truncating checkpoint on the given database.
-func applyWAL(ctx context.Context, index int, dbPath string) error {
+func applyWAL(ctx context.Context, index int, dbPath string, dbDriverName string) error {
 	// Copy WAL file from it's staging path to the correct "-wal" location.
 	if err := os.Rename(fmt.Sprintf("%s-%08x-wal", dbPath, index), dbPath+"-wal"); err != nil {
 		return err
 	}
 
 	// Open SQLite database and force a truncating checkpoint.
-	d, err := sql.Open("sqlite3", dbPath)
+	d, err := sql.Open(dbDriverName, dbPath)
 	if err != nil {
 		return err
 	}
@@ -1602,6 +1608,8 @@ type RestoreOptions struct {
 
 	// Specifies how many WAL files are downloaded in parallel during restore.
 	Parallelism int
+
+	DriverName string
 }
 
 // NewRestoreOptions returns a new instance of RestoreOptions with defaults.
@@ -1609,6 +1617,7 @@ func NewRestoreOptions() RestoreOptions {
 	return RestoreOptions{
 		Index:       math.MaxInt32,
 		Parallelism: DefaultRestoreParallelism,
+		DriverName:  "sqlite3",
 	}
 }
 
