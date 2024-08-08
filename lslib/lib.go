@@ -130,6 +130,7 @@ func (i *impl) restore(ctx context.Context, replica *litestream.Replica) (err er
 	// Configure restore to write out to DSN path.
 	opt := litestream.NewRestoreOptions()
 	opt.OutputPath = replica.DB().Path()
+	opt.DriverName = i.driverName
 
 	// Determine the latest generation to restore from.
 	if opt.Generation, _, err = replica.CalcRestoreTarget(ctx, opt); err != nil {
