@@ -15,10 +15,10 @@ import (
 	"time"
 
 	"filippo.io/age"
-	"github.com/benbjohnson/litestream/internal"
 	"github.com/pierrec/lz4/v4"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/supersupersimple/litestream-lib/internal"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -1207,7 +1207,7 @@ func (r *Replica) Restore(ctx context.Context, opt RestoreOptions) (err error) {
 
 		// Apply WAL to database file.
 		startTime := time.Now()
-		if err = applyWAL(ctx, index, tmpPath); err != nil {
+		if err = applyWAL(ctx, index, tmpPath, opt.DriverName); err != nil {
 			return fmt.Errorf("cannot apply wal: %w", err)
 		}
 		r.Logger().Info("applied wal", "generation", opt.Generation, "index", index, "elapsed", time.Since(startTime).String())
