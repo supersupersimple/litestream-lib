@@ -1,6 +1,6 @@
 litestream-lib
 
-Forked from litestream([web](https://litestream.io/)|[github](https://github.com/benbjohnson/litestream))
+Forked from litestream([web](https://litestream.io/) | [github](https://github.com/benbjohnson/litestream))
 
 Trying to make it as a lib to init sqlite db client, that can automatically restore and replicate sqlite db to remote, but user can just treat it as golang *sql.DB.
 
@@ -22,18 +22,18 @@ export LITESTREAM_SECRET_ACCESS_KEY=minioadmin
 ```
 - Init and open db.
 ```go
-    lsdb := lslib.NewDB(lslib.NewConfig("test.db").WithDriverName("sqlite"))
-	db, err := lsdb.Open(ctx) // db is *sql.DB
-	if err != nil {
-		panic(err)
-	}
+lsdb := lslib.NewDB(lslib.NewConfig("test.db").WithDriverName("sqlite"))
+db, err := lsdb.Open(ctx) // db is *sql.DB
+if err != nil {
+	panic(err)
+}
 
-	defer lsdb.Close(ctx)
-	db.SetMaxOpenConns(1)
+defer lsdb.Close(ctx)
+db.SetMaxOpenConns(1)
 
-	pingErr := db.Ping()
-	if pingErr != nil {
-		log.Fatal(pingErr)
-	}
-	fmt.Println("Connected!")
+pingErr := db.Ping()
+if pingErr != nil {
+	log.Fatal(pingErr)
+}
+fmt.Println("Connected!")
 ```
