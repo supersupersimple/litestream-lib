@@ -17,7 +17,7 @@ func main() {
 		panic(err)
 	}
 
-	defer db.Close()
+	defer lsdb.Close(ctx)
 	db.SetMaxOpenConns(1)
 
 	pingErr := db.Ping()
